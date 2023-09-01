@@ -3,6 +3,10 @@ using Emgu.CV;
 using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 
+using Image8u = CV.Image<byte>;
+using Image32f = CV.Image<float>;
+using Image64f = CV.Image<double>;
+
 namespace CV
 {
     public class Image<T>
@@ -21,6 +25,7 @@ namespace CV
         }
     }
 }
+
 namespace emgucv_example
 {
     class Program
@@ -28,7 +33,7 @@ namespace emgucv_example
         static void Main(string[] args)
         {
            
-            var bimg = new CV.Image<byte>(400, 200, 3); 
+            var bimg = new Image8u(400, 200, 3); 
             String win1 = "Test Window"; //The name of the window
             CvInvoke.NamedWindow(win1); //Create the window using the specific name
 
