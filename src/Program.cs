@@ -55,33 +55,32 @@ namespace CV
             {
                 if (disposing)
                 {
-                    // TODO: dispose managed state (managed objects)
+                    // Dispose managed resources.
                     Mat.Dispose();
                 }
 
-                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
-                // TODO: set large fields to null
+                // free unmanaged resources (unmanaged objects) and override finalizer
+                // set large fields to null
                 handle.Free();
                 disposed = true;
             }
         }
 
-        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-        // ~ImageAsMat()
-        // {
-        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-        //     Dispose(disposing: false);
-        // }
-
-        void IDisposable.Dispose()
+        // Use C# finalizer syntax for finalization code.
+        // This finalizer will run only if the Dispose method does not get called.
+        // It gives your base class the opportunity to finalize.
+        // Do not provide finalizer in types derived from this class.
+        ~ImageAsMat() => Dispose(disposing: false);
+        
+        // Implement IDisposable.
+        // Do not make this method virtual. A derived class should not be able to override this method.
+        public void Dispose()
         {
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
             Dispose(disposing: true);
             // This object will be cleaned up by the Dispose method.
-            // Therefore, you should call GC.SuppressFinalize to
-            // take this object off the finalization queue
-            // and prevent finalization code for this object
-            // from executing a second time.
+            // Therefore, you should call GC.SuppressFinalize to take this object off the finalization queue
+            // and prevent finalization code for this object from executing a second time.
             GC.SuppressFinalize(this);
         }
     }
@@ -165,11 +164,13 @@ namespace emgucv_example
         {
            
             var bimg = new Image8u(400, 200, 3);
+
             using (var m = new CV.Image8uAsMat(bimg))
             {
                 CvInvoke.BitwiseNot(m.Mat, m.Mat);
             }
-                String win1 = "Test Window"; //The name of the window
+               
+            String win1 = "Test Window"; //The name of the window
             CvInvoke.NamedWindow(win1); //Create the window using the specific name
 
             unsafe
