@@ -13,13 +13,7 @@ using Image32s = CV.Image<int>;
 using Image32f = CV.Image<float>;
 using Image64f = CV.Image<double>;
 
-using Image8uAsMat = CV.Image8uAsMat;
-using Image8sAsMat = CV.Image8sAsMat;
-using Image16uAsMat = CV.Image16uAsMat;
-using Image16sAsMat = CV.Image16sAsMat;
-using Image32sAsMat = CV.Image32sAsMat;
-using Image32fAsMat = CV.Image32fAsMat;
-using Image64fAsMat = CV.Image64fAsMat;
+using ImageAsMat = CV.ImageAsMat;
 
 namespace CV
 {
@@ -45,19 +39,56 @@ namespace CV
 
     /// <summary>
     /// Base class <c>ImageAsMat</c> gets a Mat object from Image without owning the data.
-    /// It is used for OpenCV function.
+    /// It is used for applying the OpenCV functions.
     /// </summary>
-    /// <typeparam name="T">Numeric types, use IBinaryNumber for .net 7 or later</typeparam>
-    public class ImageAsMat<T> : IDisposable where T : IComparable, IComparable<T>, IConvertible, IEquatable<T>, IFormattable
+    public class ImageAsMat : IDisposable
     {
-        protected GCHandle handle;
+        private GCHandle handle;
         public Mat Mat { get; set; }
         private bool disposed = false;
 
-        protected ImageAsMat(Image<T> image)
+        public ImageAsMat(Image8u image)
         {
             handle = GCHandle.Alloc(image.Data, GCHandleType.Pinned);
+            Mat = new Mat(image.Height, image.Width, DepthType.Cv8U, image.Channels, handle.AddrOfPinnedObject(), image.Width * image.Channels);
         }
+
+        public ImageAsMat(Image8s image)
+        {
+            handle = GCHandle.Alloc(image.Data, GCHandleType.Pinned);
+            Mat = new Mat(image.Height, image.Width, DepthType.Cv8S, image.Channels, handle.AddrOfPinnedObject(), image.Width * image.Channels);
+        }
+
+        public ImageAsMat(Image16u image)
+        {
+            handle = GCHandle.Alloc(image.Data, GCHandleType.Pinned);
+            Mat = new Mat(image.Height, image.Width, DepthType.Cv16U, image.Channels, handle.AddrOfPinnedObject(), image.Width * image.Channels * sizeof(ushort));
+        }
+
+        public ImageAsMat(Image16s image)
+        {
+            handle = GCHandle.Alloc(image.Data, GCHandleType.Pinned);
+            Mat = new Mat(image.Height, image.Width, DepthType.Cv16S, image.Channels, handle.AddrOfPinnedObject(), image.Width * image.Channels * sizeof(short));
+        }
+
+        public ImageAsMat(Image32s image)
+        {
+            handle = GCHandle.Alloc(image.Data, GCHandleType.Pinned);
+            Mat = new Mat(image.Height, image.Width, DepthType.Cv32S, image.Channels, handle.AddrOfPinnedObject(), image.Width * image.Channels * sizeof(int));
+        }
+
+        public ImageAsMat(Image32f image)
+        {
+            handle = GCHandle.Alloc(image.Data, GCHandleType.Pinned);
+            Mat = new Mat(image.Height, image.Width, DepthType.Cv32F, image.Channels, handle.AddrOfPinnedObject(), image.Width * image.Channels * sizeof(float));
+        }
+
+        public ImageAsMat(Image64f image)
+        {
+            handle = GCHandle.Alloc(image.Data, GCHandleType.Pinned);
+            Mat = new Mat(image.Height, image.Width, DepthType.Cv64F, image.Channels, handle.AddrOfPinnedObject(), image.Width * image.Channels * sizeof(double));
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (!disposed)
@@ -93,62 +124,6 @@ namespace CV
             GC.SuppressFinalize(this);
         }
     }
-
-    public class Image8uAsMat : ImageAsMat<byte>
-    {
-        public Image8uAsMat(Image8u image) : base(image)
-        {
-            Mat = new Mat(image.Height, image.Width, DepthType.Cv8U, image.Channels, handle.AddrOfPinnedObject(), image.Width * image.Channels);
-        }
-    }
-
-    public class Image8sAsMat : ImageAsMat<sbyte>
-    {
-        public Image8sAsMat(Image8s image) : base(image)
-        {
-            Mat = new Mat(image.Height, image.Width, DepthType.Cv8S, image.Channels, handle.AddrOfPinnedObject(), image.Width * image.Channels);
-        }
-    }
-
-    public class Image16uAsMat : ImageAsMat<ushort>
-    {
-        public Image16uAsMat(Image16u image) : base(image)
-        {
-            Mat = new Mat(image.Height, image.Width, DepthType.Cv16U, image.Channels, handle.AddrOfPinnedObject(), image.Width * image.Channels * sizeof(ushort));
-        }
-    }
-
-    public class Image16sAsMat : ImageAsMat<short>
-    {
-        public Image16sAsMat(Image16s image) : base(image)
-        {
-            Mat = new Mat(image.Height, image.Width, DepthType.Cv16S, image.Channels, handle.AddrOfPinnedObject(), image.Width * image.Channels * sizeof(short));
-        }
-    }
-
-    public class Image32sAsMat : ImageAsMat<int>
-    {
-        public Image32sAsMat(Image32s image) : base(image)
-        {
-            Mat = new Mat(image.Height, image.Width, DepthType.Cv32S, image.Channels, handle.AddrOfPinnedObject(), image.Width * image.Channels * sizeof(int));
-        }
-    }
-
-    public class Image32fAsMat : ImageAsMat<float>
-    {
-        public Image32fAsMat(Image32f image) : base(image)
-        {
-            Mat = new Mat(image.Height, image.Width, DepthType.Cv32F, image.Channels, handle.AddrOfPinnedObject(), image.Width * image.Channels * sizeof(float));
-        }
-    }
-
-    public class Image64fAsMat : ImageAsMat<double>
-    {
-        public Image64fAsMat(Image64f image) : base(image)
-        {
-            Mat = new Mat(image.Height, image.Width, DepthType.Cv64F, image.Channels, handle.AddrOfPinnedObject(), image.Width * image.Channels * sizeof(double));
-        }
-    }
 }
 
 namespace emgucv_example
@@ -157,11 +132,11 @@ namespace emgucv_example
     {
         static void Main(string[] args)
         {
-            var bimg = new Image8u(400, 200, 3);
+            Image8u bimg = new(400, 200, 3);
 
-            using (var m = new Image8uAsMat(bimg))
+            using (ImageAsMat m1 = new(bimg))
             {
-                CvInvoke.BitwiseNot(m.Mat, m.Mat);
+                CvInvoke.BitwiseNot(m1.Mat, m1.Mat);
             }
                
             String win1 = "Test Window"; //The name of the window
@@ -171,7 +146,7 @@ namespace emgucv_example
             {
                 fixed (byte* p = bimg.Data)
                 {
-                    using (Mat m2 = new Mat(200, 400, DepthType.Cv8U, 3, (IntPtr)p, bimg.Width * 3))
+                    using (Mat m2 = new(200, 400, DepthType.Cv8U, 3, (IntPtr)p, bimg.Width * 3))
                     {
                         CvInvoke.BitwiseNot(m2, m2);
                     }
