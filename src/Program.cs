@@ -26,8 +26,8 @@ namespace CV
     /// <summary>
     /// Class <c>Image</c> stores data for a two-dimensional image. It is used for storing data.
     /// </summary>
-    /// <typeparam name="T"></typeparam>    
-    public class Image<T>
+    /// <typeparam name="T">Numeric types, use IBinaryNumber for .net 7 or later</typeparam>    
+    public class Image<T> where T : IComparable, IComparable<T>, IConvertible, IEquatable<T>, IFormattable
     {
         public T[] Data { get; set; }
         public int Width { get; set; }
@@ -47,8 +47,8 @@ namespace CV
     /// Base class <c>ImageAsMat</c> gets a Mat object from Image without owning the data.
     /// It is used for OpenCV function.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public class ImageAsMat<T> : IDisposable
+    /// <typeparam name="T">Numeric types, use IBinaryNumber for .net 7 or later</typeparam>
+    public class ImageAsMat<T> : IDisposable where T : IComparable, IComparable<T>, IConvertible, IEquatable<T>, IFormattable
     {
         protected GCHandle handle;
         public Mat Mat { get; set; }
@@ -157,7 +157,6 @@ namespace emgucv_example
     {
         static void Main(string[] args)
         {
-           
             var bimg = new Image8u(400, 200, 3);
 
             using (var m = new Image8uAsMat(bimg))

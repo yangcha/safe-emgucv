@@ -2,3 +2,4 @@
 /src/obj/
 *.swp
 *.suo
+/src/.vs/
