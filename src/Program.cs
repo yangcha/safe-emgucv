@@ -5,30 +5,30 @@ using Emgu.CV.Structure;
 using System.Runtime.InteropServices;
 
 
-using Image8u = CV.Image<byte>;
-using Image8s = CV.Image<sbyte>;
-using Image16u = CV.Image<ushort>;
-using Image16s = CV.Image<short>;
-using Image32s = CV.Image<int>;
-using Image32f = CV.Image<float>;
-using Image64f = CV.Image<double>;
+using ManagedImage8u = CV.ManagedImage<byte>;
+using ManagedImage8s = CV.ManagedImage<sbyte>;
+using ManagedImage16u = CV.ManagedImage<ushort>;
+using ManagedImage16s = CV.ManagedImage<short>;
+using ManagedImage32s = CV.ManagedImage<int>;
+using ManagedImage32f = CV.ManagedImage<float>;
+using ManagedImage64f = CV.ManagedImage<double>;
 
-using ImageAsMat = CV.ImageAsMat;
+using ManagedImageAsMat = CV.ManagedImageAsMat;
 
 namespace CV
 {
     /// <summary>
-    /// Class <c>Image</c> stores data for a two-dimensional image. It is used for storing data.
+    /// Class <c>ManagedImage</c> stores data for a two-dimensional image. It is used for storing data.
     /// </summary>
     /// <typeparam name="T">Numeric types, use IBinaryNumber for .net 7 or later</typeparam>    
-    public class Image<T> where T : IComparable, IComparable<T>, IConvertible, IEquatable<T>, IFormattable
+    public class ManagedImage<T> where T : IComparable, IComparable<T>, IConvertible, IEquatable<T>, IFormattable
     {
         public T[] Data { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
         public int Channels { get; set; }
 
-        public Image(int width, int height, int channels)
+        public ManagedImage(int width, int height, int channels)
         {
             Data = new T[width * height * channels];
             Width = width;
@@ -38,52 +38,52 @@ namespace CV
     }
 
     /// <summary>
-    /// Base class <c>ImageAsMat</c> gets a Mat object from Image without owning the data.
+    /// Base class <c>ManagedImageAsMat</c> gets a Mat object from Image without owning the data.
     /// It is used for applying the OpenCV functions.
     /// </summary>
-    public class ImageAsMat : IDisposable
+    public class ManagedImageAsMat : IDisposable
     {
         private GCHandle handle;
         public Mat Mat { get; set; }
         private bool disposed = false;
 
-        public ImageAsMat(Image8u image)
+        public ManagedImageAsMat(ManagedImage8u image)
         {
             handle = GCHandle.Alloc(image.Data, GCHandleType.Pinned);
             Mat = new Mat(image.Height, image.Width, DepthType.Cv8U, image.Channels, handle.AddrOfPinnedObject(), image.Width * image.Channels);
         }
 
-        public ImageAsMat(Image8s image)
+        public ManagedImageAsMat(ManagedImage8s image)
         {
             handle = GCHandle.Alloc(image.Data, GCHandleType.Pinned);
             Mat = new Mat(image.Height, image.Width, DepthType.Cv8S, image.Channels, handle.AddrOfPinnedObject(), image.Width * image.Channels);
         }
 
-        public ImageAsMat(Image16u image)
+        public ManagedImageAsMat(ManagedImage16u image)
         {
             handle = GCHandle.Alloc(image.Data, GCHandleType.Pinned);
             Mat = new Mat(image.Height, image.Width, DepthType.Cv16U, image.Channels, handle.AddrOfPinnedObject(), image.Width * image.Channels * sizeof(ushort));
         }
 
-        public ImageAsMat(Image16s image)
+        public ManagedImageAsMat(ManagedImage16s image)
         {
             handle = GCHandle.Alloc(image.Data, GCHandleType.Pinned);
             Mat = new Mat(image.Height, image.Width, DepthType.Cv16S, image.Channels, handle.AddrOfPinnedObject(), image.Width * image.Channels * sizeof(short));
         }
 
-        public ImageAsMat(Image32s image)
+        public ManagedImageAsMat(ManagedImage32s image)
         {
             handle = GCHandle.Alloc(image.Data, GCHandleType.Pinned);
             Mat = new Mat(image.Height, image.Width, DepthType.Cv32S, image.Channels, handle.AddrOfPinnedObject(), image.Width * image.Channels * sizeof(int));
         }
 
-        public ImageAsMat(Image32f image)
+        public ManagedImageAsMat(ManagedImage32f image)
         {
             handle = GCHandle.Alloc(image.Data, GCHandleType.Pinned);
             Mat = new Mat(image.Height, image.Width, DepthType.Cv32F, image.Channels, handle.AddrOfPinnedObject(), image.Width * image.Channels * sizeof(float));
         }
 
-        public ImageAsMat(Image64f image)
+        public ManagedImageAsMat(ManagedImage64f image)
         {
             handle = GCHandle.Alloc(image.Data, GCHandleType.Pinned);
             Mat = new Mat(image.Height, image.Width, DepthType.Cv64F, image.Channels, handle.AddrOfPinnedObject(), image.Width * image.Channels * sizeof(double));
@@ -110,7 +110,7 @@ namespace CV
         // This finalizer will run only if the Dispose method does not get called.
         // It gives your base class the opportunity to finalize.
         // Do not provide finalizer in types derived from this class.
-        ~ImageAsMat() => Dispose(disposing: false);
+        ~ManagedImageAsMat() => Dispose(disposing: false);
         
         // Implement IDisposable.
         // Do not make this method virtual. A derived class should not be able to override this method.
@@ -132,9 +132,9 @@ namespace emgucv_example
     {
         static void Main(string[] args)
         {
-            Image8u bimg = new(400, 200, 3);
+            ManagedImage8u bimg = new(400, 200, 3);
 
-            using (ImageAsMat m1 = new(bimg))
+            using (ManagedImageAsMat m1 = new(bimg))
             {
                 CvInvoke.BitwiseNot(m1.Mat, m1.Mat);
             }
