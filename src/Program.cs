@@ -28,6 +28,30 @@ namespace CV
         public int Height { get; set; }
         public int Channels { get; set; }
 
+        /// <summary>
+        /// Access pixel in image
+        /// </summary>
+        /// <param name="row">row</param>
+        /// <param name="col">column</param>
+        /// <param name="cha">channel</param>
+        /// <returns>pixel value</returns>
+        public T this[int row, int col, int cha]
+        {
+            get { return Data[(row * Width + col) * Channels + cha]; }
+            set { Data[(row * Width + col) * Channels + cha] = value; }
+        }
+
+        /// <summary>
+        /// Access pixel in grayscale image, assume Channels is 1
+        /// </summary>
+        /// <param name="row">row</param>
+        /// <param name="col">column</param>
+        /// <returns>pixel value</returns>
+        public T this[int row, int col]
+        {
+            get { return Data[(row * Width + col) * Channels]; }
+            set { Data[(row * Width + col) * Channels] = value; }
+        }
         public ManagedImage(int width, int height, int channels)
         {
             Data = new T[width * height * channels];
@@ -138,6 +162,8 @@ namespace emgucv_example
             {
                 CvInvoke.BitwiseNot(m1.Mat, m1.Mat);
             }
+
+            bimg[0, 2, 1] = 10;
                
             String win1 = "Test Window"; //The name of the window
             CvInvoke.NamedWindow(win1); //Create the window using the specific name
