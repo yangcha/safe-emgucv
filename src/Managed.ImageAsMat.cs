@@ -8,6 +8,13 @@ namespace Managed
     /// <summary>
     /// Base class <c>ImageAsMat</c> gets a Mat object from Image without owning the data.
     /// It is used for applying the OpenCV functions.
+    ///
+    /// Sample usage:
+    /// Managed.Image8u bimg = new(400, 200, 3);
+    /// using (Managed.ImageAsMat m1 = new(bimg))
+    /// {
+    ///     CvInvoke.BitwiseNot(m1.Mat, m1.Mat);
+    /// }
     /// </summary>
     public class ImageAsMat : IDisposable
     {
