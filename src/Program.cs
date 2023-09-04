@@ -17,6 +17,12 @@ namespace emgucv_example
             }
 
             bimg[0, 2, 1] = 10;
+
+            Managed.Image32f fimg = new(512, 512, 1);
+            using (Managed.ImageAsMat mf = new(fimg))
+            {
+                CvInvoke.Accumulate(mf.Mat, mf.Mat);
+            }
                
             String win1 = "Test Window"; //The name of the window
             CvInvoke.NamedWindow(win1); //Create the window using the specific name
