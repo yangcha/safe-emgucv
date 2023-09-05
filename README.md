@@ -1,11 +1,11 @@
 # safe-emgucv
 Make EmguCV memory and resource management safe.
 
-EmguCV's `Mat` holds unmanaged native memory which needs to dispose manually. It is not safe to use it to store data or to pass the data around.
+EmguCV's `Mat` holds unmanaged native memory which needs to be disposed of manually. It is not safe to use it to store data or to pass the data around.
 
-This project is to show how to store the data in the managed array, then there not no need to dispose it manually. To apply the EmguCV's function to it, an adapter class `ImageAsMat` is used to convert the `Image` type to `CVMat` without owning it. 
+This project is to show how to store the data in the managed array, then there not no need to dispose of it manually. To apply the EmguCV's function to it, an adapter class `ImageAsMat` is used to convert the `Image` type to `CVMat` without owning it. 
 
-The `GCHandle` is used to pin the memory for EmguCV, and it is automatically created and safely disposed.
+The `GCHandle` is used to pin the memory for EmguCV, and it is automatically created and safely disposed of with Dispose Pattern.
 
 Example usage:
 
