@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Emgu.CV;
 using Emgu.CV.CvEnum;
@@ -69,6 +70,7 @@ namespace Managed
                 if (disposing)
                 {
                     // Dispose managed resources.
+                    Debug.Assert(handle.AddrOfPinnedObject() == Mat.DataPointer, "EmguCV function call changes the output memory pointer, the result is not saved to the managed memory.");
                     Mat.Dispose();
                 }
 

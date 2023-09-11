@@ -17,3 +17,18 @@ using (Managed.ImageAsMat m1 = new(bimg))
      CvInvoke.BitwiseNot(m1.Mat, m1.Mat);
 }
 ```
+
+The memory allocation for cv::Mat class can be changed any time. For example, in many cases, a Mat is allocated using the empty constructor:
+
+```
+Mat result = new Mat()
+```
+
+New memory is allocated when a CvInvoke function is called:
+
+```
+CvInvoke.BitwiseNot(src, result)
+```
+
+In this case, the memory referenced by Mat can be changed after the function call. Here `Debug.Assert` is used to check if the memory referenced by Mat is changed or not.
+

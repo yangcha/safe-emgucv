@@ -1,5 +1,4 @@
-﻿using System;
-using Emgu.CV;
+﻿using Emgu.CV;
 using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 
@@ -9,11 +8,14 @@ namespace emgucv_example
     {
         static void Main(string[] args)
         {
-            Managed.Image8u bimg = new(400, 200, 3);
+            Mat im = new Mat(200, 400, DepthType.Cv8U, 3); //Create a 3 channel image of 400x200
+            im.SetTo(new Bgr(255, 0, 0).MCvScalar); // set it to Blue color
 
+            Managed.Image8u bimg = new(400, 200, 3);
             using (Managed.ImageAsMat m1 = new(bimg))
             {
                 CvInvoke.BitwiseNot(m1.Mat, m1.Mat);
+                CvInvoke.Resize(im, m1.Mat, new System.Drawing.Size(200, 100));
             }
 
             bimg[0, 2, 1] = 10;
@@ -24,14 +26,14 @@ namespace emgucv_example
                 CvInvoke.Accumulate(mf.Mat, mf.Mat);
             }
                
-            String win1 = "Test Window"; //The name of the window
+            string win1 = "Test Window"; //The name of the window
             CvInvoke.NamedWindow(win1); //Create the window using the specific name
 
             unsafe
             {
                 fixed (byte* p = bimg.Data)
                 {
-                    using (Mat m2 = new(200, 400, DepthType.Cv8U, 3, (IntPtr)p, bimg.Width * 3))
+                    using (Mat m2 = new(200, 400, DepthType.Cv8U, 3, (System.IntPtr)p, bimg.Width * 3))
                     {
                         CvInvoke.BitwiseNot(m2, m2);
                     }
